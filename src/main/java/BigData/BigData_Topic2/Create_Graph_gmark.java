@@ -13,13 +13,13 @@ import java.util.Map;
  * 
  */
 
-public class Read_Graph_gmark {
+public class Create_Graph_gmark {
 	
 	private File file = null;
 	private List<String> result = null;
 	private BufferedReader buffer;
 	
-	public Read_Graph_gmark() {
+	public Create_Graph_gmark() {
 		this.file = new File("input/play-graph0.txt");
 		this.result = new ArrayList<String>();
 	}

@@ -22,7 +22,7 @@ public class App
 	static int DBs = 4;
 	public static void main( String[] args ) throws IOException
 	{
-		Read_Graph_gmark rGg = new Read_Graph_gmark();
+		Create_Graph_gmark rGg = new Create_Graph_gmark();
 		rGg.loadFile_buildQuery(DBs);
 
 		List<String> queryList = rGg.getQuery();    	
