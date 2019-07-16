@@ -18,16 +18,18 @@ public class Create_Graph_gmark {
 	private File file = null;
 	private List<String> result = null;
 	private BufferedReader buffer;
+	private int DBs;
 	
-	public Create_Graph_gmark() {
+	public Create_Graph_gmark() throws NumberFormatException, IOException {
 		this.file = new File("input/test-graph.txt0.txt");
 		this.result = new ArrayList<String>();
+		this.DBs = Integer.parseInt(new Read_Properties().getDBs());
 	}
-	
-	public void loadFile_buildQuery(int DBs) throws IOException {
+
+	public void loadFile_buildQuery() throws IOException {
 		buffer = new BufferedReader(new FileReader(this.file));
 		
-		int[] DBsArray = new int[DBs];
+		int[] DBsArray = new int[this.DBs];
 		for (int i=0;i<DBsArray.length;i++)
 			DBsArray[i]=1;
 		
@@ -43,13 +45,13 @@ public class Create_Graph_gmark {
 			
 			String label1, label2;
 			if (!nodes.containsKey(node1)){
-				label1 = generateNode(nodes, node1, DBs, DBsArray);
+				label1 = generateNode(nodes, node1, this.DBs, DBsArray);
 			}else{
 				label1 = nodes.get(node1); 
 			}
 			
 			if (!nodes.containsKey(node2)){
-				label2 = generateNode(nodes, node2, DBs, DBsArray);
+				label2 = generateNode(nodes, node2, this.DBs, DBsArray);
 			}else{
 				label2 = nodes.get(node2); 
 			}
