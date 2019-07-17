@@ -9,7 +9,10 @@ import java.util.Set;
 
 public class Metrics {
 	
-	public double nDDGC(String[] X, String newNode, int r) {
+	public double nDDCG(String[] X, String newNode, int r) {
+		
+		if (r > X.length + 1)
+			return -1;
 		
 		List<String> ranking = new ArrayList<>();
 		for(int i=0; i<X.length; i++) {
@@ -18,14 +21,18 @@ public class Metrics {
 		ranking.add(newNode);
 		
 		double sum = 0;
+//		System.out.println("\nNode: " + newNode + " DDCG ----- ");
 		for(int i=0; i<r; i++) {
 			sum += (Rel(ranking.get(i),newNode)/(Math.log(i+2)/Math.log(2)));
+//			System.out.println(sum);
 		}
 		
-		return sum/IDDCG(ranking);
+		//System.out.println("Node: "+ newNode + "\n" + sum + " " + IDDCG(ranking,r));
+		
+		return sum/IDDCG(ranking,r);
 	}
 
-	private double IDDCG(List<String> ranking) {
+	private double IDDCG(List<String> ranking, int r) {
 		double[] rel = new double[ranking.size()];
 		
 		int i = 0;
@@ -36,7 +43,15 @@ public class Metrics {
 		
 		Arrays.sort(rel);
 		rel = reverseArray(rel);
-		return rel[rel.length-1]/(Math.log(rel.length)/Math.log(2));
+		
+		double sum = 0.;
+//		System.out.println("\nIDDCG --- ");
+		for(i=0; i<r; i++) {
+			sum += rel[i]/(Math.log(i+2)/Math.log(2));
+//			System.out.println(sum);
+		}
+		
+		return sum;
 	}
 
 	private double Rel(String n0, String newNode) {

@@ -21,7 +21,7 @@ public class Create_Graph_gmark {
 	private int DBs;
 	
 	public Create_Graph_gmark() throws NumberFormatException, IOException {
-		this.file = new File("input/test-graph.txt0.txt");
+		this.file = new File("input/social-graph.txt0.txt");
 		this.result = new ArrayList<String>();
 		this.DBs = Integer.parseInt(new Read_Properties().getDBs());
 	}

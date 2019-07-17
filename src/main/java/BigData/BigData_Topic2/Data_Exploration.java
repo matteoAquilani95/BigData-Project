@@ -28,10 +28,11 @@ public class Data_Exploration {
 
 		for (String o : P) {
 			if (Score(o,X,maxDPR) > s) {
-				if(A.size() > k)
+				if(A.size() >= k)
 					A.remove(A.size()-1);
 				A.add(o);
 				s = Score(A.get(A.size()-1), X, maxDPR);
+				//System.out.println("Aggiunto elemento in A: " + A.toString());
 			}
 		}
 
@@ -52,7 +53,7 @@ public class Data_Exploration {
 	private double Score(String o, String[] X, double maxDPR) {
 		double alpha=0.33, beta=0.33, gamma=0.33;
 
-		return (alpha * nDPR(o, maxDPR)) + (beta * Match(o,X)) + (gamma * ADJ(o,X)); //DPR ok, 
+		return (alpha * nDPR(o, maxDPR)) + (beta * Match(o,X)) + (gamma * ADJ(o,X));
 	}
 
 	private double nDPR(String o, double max) {
@@ -61,6 +62,7 @@ public class Data_Exploration {
 
 	private double DPR(String o) {
 		double df = 0.85;
+		//System.out.println("Node: "+o);
 		List<String> neighbors = this.service.get_Neighbors(o);
 
 		double sum = 0.; //da controllare il nodo radice
@@ -69,7 +71,7 @@ public class Data_Exploration {
 			sum += DPR(neighbor) * nDIV(o, neighbor);
 		}
 
-		System.out.println("Node "+ o + " --> "+sum);
+		//System.out.println("Node "+ o + " --> "+sum);
 
 		return (1 - df) + df * sum;
 	}
@@ -141,14 +143,19 @@ public class Data_Exploration {
 	}
 
 	private double localCC(String n) {
-		return 2 * TriangleCount(n) / (deg(n) * (deg(n)-1));
+		int deg = Deg(n);
+		if ((deg == 1) || (deg == 0)) {
+			return 0;
+		} else {
+			return 2 * TriangleCount(n) / (Deg(n) * (Deg(n)-1));
+		}
 	}
 
 	private int TriangleCount(String n) {
 		return this.service.tringlesCount(n);
 	}
 
-	private int deg(String n) {
+	private int Deg(String n) {
 		return this.service.get_Neighbors(n).size();
 	}
 

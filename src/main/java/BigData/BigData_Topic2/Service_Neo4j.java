@@ -16,6 +16,7 @@ public class Service_Neo4j {
 
 	public Service_Neo4j() {
 		driver = GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic("neo4j", "PasSW0rd"));
+		//driver = GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic("paper", "PasSW0rd"));
 	}
 
 	public void add_Data(List<String> queryList) {
@@ -85,13 +86,13 @@ public class Service_Neo4j {
 		int result = 0;
 		String query = "CALL algo.triangleCount.stream('Node', 'p0', {concurrency:4}) " + 
 						"YIELD nodeId, triangles " + 
-						"WHERE algo.asNode(nodeId).name = '"+node+"' " + 
-						"RETURN algo.asNode(nodeId).name AS name, triangles";
+						"WHERE algo.asNode(nodeId).num = '"+node+"' " + 
+						"RETURN algo.asNode(nodeId).num AS name, triangles";
 		
 		try (Session session = driver.session()) {
 			StatementResult rs = session.run(query);
 			for (Record record : rs.list()) {
-				result = Integer.parseInt(record.get("triangles").asString());
+				result = record.get("triangles").asInt();
 			}
 			
 			session.close();
@@ -114,7 +115,7 @@ public class Service_Neo4j {
 		try (Session session = driver.session()) {
 			StatementResult rs = session.run(query);
 			for (Record record : rs.list()) {
-				result = record.get("weight").asDouble();
+				result = Double.parseDouble(record.get("weight").asString());
 			}
 			
 			session.close();
