@@ -97,7 +97,7 @@ public class Data_Exploration {
 		return s1.size();
 	}
 	
-	public Set<String> difference(Set<String> s1, Set<String> s2) {
+	private Set<String> difference(Set<String> s1, Set<String> s2) {
 		Set<String> r = new HashSet<>();
 		r.clear();
 		r.addAll(s1);
@@ -170,9 +170,8 @@ public class Data_Exploration {
 		return intersection.size() / s1.size();
 	}
 
-	private int Match(String o, String[] X) {
-		// TODO Auto-generated method stub
-		return 0;
+	private double Match(String o, String[] X) {
+		return this.service.getWeight(o, X[X.length-1]);
 	}
 
 }

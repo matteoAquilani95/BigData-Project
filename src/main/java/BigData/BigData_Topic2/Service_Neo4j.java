@@ -108,4 +108,18 @@ public class Service_Neo4j {
 		driver.close();
 	}
 
+	public double getWeight(String n1, String n2) {
+		double result = 0;
+		String query = "MATCH (n1:Node{num:'"+n1+"'})-[rel:p0]-(n2:Node{num:'"+n2+"'}) return rel.v as weight";
+		try (Session session = driver.session()) {
+			StatementResult rs = session.run(query);
+			for (Record record : rs.list()) {
+				result = record.get("weight").asDouble();
+			}
+			
+			session.close();
+		}
+		return result;
+	}
+
 }
