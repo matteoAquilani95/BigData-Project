@@ -25,6 +25,8 @@ public class App
 			System.out.println(met.nDDCG(X, res, X.length+1));
 		}
 		
+//		System.out.println(service.max_Page_Rank_Neo4j());
+		
 //	
 //		String node = "v1,d1";
 //		String node2 = "v2,d2";

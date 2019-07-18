@@ -64,6 +64,46 @@ public class Service_Neo4j {
 		return result;
 	}
 	
+	public double Page_Rank_Neo4j(String node) {
+		
+		double result = 0.;
+		
+		String query = "CALL algo.pageRank.stream('Node', 'p0', { " + 
+				"  iterations:20, dampingFactor:0.85, weightProperty:'v' " + 
+				"}) " + 
+				"YIELD nodeId, score " + 
+				"WHERE algo.asNode(nodeId).num = '"+node+"'" + 
+				"RETURN algo.asNode(nodeId).num AS page,score";
+		try (Session session = driver.session()) {
+			StatementResult rs = session.run(query);
+			result = rs.next().get("score").asDouble();
+			
+			session.close();
+		}
+		
+		return result;
+	}
+	
+public double max_Page_Rank_Neo4j() {
+		
+		double result = 0.;
+		
+		String query = "CALL algo.pageRank.stream('Node', 'p0', { " + 
+				"  iterations:20, dampingFactor:0.85, weightProperty: \"v\" " + 
+				"}) " + 
+				"YIELD nodeId, score " + 
+				"RETURN algo.asNode(nodeId).num AS page, score " + 
+				"ORDER BY score DESC";
+		try (Session session = driver.session()) {
+			StatementResult rs = session.run(query);
+			result = rs.next().get("score").asDouble();
+			
+			session.close();
+		}
+		
+		return result;
+	}
+	
 	public List<String> findAll(){
 		List<String> result = new ArrayList<String>();
 		
@@ -115,7 +155,7 @@ public class Service_Neo4j {
 		try (Session session = driver.session()) {
 			StatementResult rs = session.run(query);
 			for (Record record : rs.list()) {
-				result = Double.parseDouble(record.get("weight").asString());
+				result = record.get("weight").asDouble();//Double.parseDouble(record.get("weight").asString());
 			}
 			
 			session.close();

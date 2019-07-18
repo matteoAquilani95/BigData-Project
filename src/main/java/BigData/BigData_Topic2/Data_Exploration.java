@@ -24,7 +24,7 @@ public class Data_Exploration {
 		double s = Double.MIN_VALUE;
 		P = this.service.get_Neighbors(X[X.length-1]); //Ritorna tutti i vicini dell'ultimo nodo del Path X
 
-		double maxDPR = findMaxDPR();
+		double maxDPR = this.service.max_Page_Rank_Neo4j();//findMaxDPR();
 
 		for (String o : P) {
 			if (Score(o,X,maxDPR) > s) {
@@ -32,7 +32,7 @@ public class Data_Exploration {
 					A.remove(A.size()-1);
 				A.add(o);
 				s = Score(A.get(A.size()-1), X, maxDPR);
-				//System.out.println("Aggiunto elemento in A: " + A.toString());
+				System.out.println("Aggiunto elemento in A: " + A.toString());
 			}
 		}
 
@@ -43,7 +43,7 @@ public class Data_Exploration {
 		List<String> allNodes = this.service.findAll();
 		double max = Double.MIN_VALUE;
 		for (String node : allNodes) {
-			double result = DPR(node);
+			double result = DPR(node);//this.service.Page_Rank_Neo4j(node);//
 			if (max < result)
 				max = result;
 		}
@@ -53,11 +53,17 @@ public class Data_Exploration {
 	private double Score(String o, String[] X, double maxDPR) {
 		double alpha=0.33, beta=0.33, gamma=0.33;
 
-		return (alpha * nDPR(o, maxDPR)) + (beta * Match(o,X)) + (gamma * ADJ(o,X));
+		return (alpha * nDPR_PageRank(o, maxDPR)) + (beta * Match(o,X)) + (gamma * ADJ(o,X));
 	}
 
 	private double nDPR(String o, double max) {
 		return DPR(o)/max;
+	}
+	
+	private double nDPR_PageRank(String o, double max) {
+		double result = this.service.Page_Rank_Neo4j(o)/max;
+		//System.out.println("Node: "+ o + " PageRank: " + result);
+		return result;
 	}
 
 	private double DPR(String o) {
