@@ -19,7 +19,8 @@ public class App
 		
 		String[] X = {"g256,b288,f261,d285,c298,e276,a292", "f3", "d637,e629,f590,c658,g613,a690,b666", "a103,e95"};
 		
-		List<String> resultAlgo = DE.Algorithm_1(X, 10);
+//		List<String> resultAlgo = DE.Algorithm_1(X, 10);
+		List<String> resultAlgo = DE.Algorithm_1_Mod(X, 10);
 		
 		for (String res : resultAlgo) {
 			System.out.println(met.nDDCG(X, res, X.length+1));
