@@ -20,13 +20,14 @@ public class Create_Graph_gmark {
 	private BufferedReader buffer;
 	private int DBs;
 	
-	public Create_Graph_gmark() throws NumberFormatException, IOException {
-		this.file = new File("input/social-graph.txt0.txt");
+	public Create_Graph_gmark(String pathGraph, Read_Properties rp) throws NumberFormatException, IOException{
+		this.file = new File(pathGraph);
 		this.result = new ArrayList<String>();
-		this.DBs = Integer.parseInt(new Read_Properties().getDBs());
+		this.DBs = Integer.parseInt(rp.getDBs());
+		this.loadFile_buildQuery();
 	}
 
-	public void loadFile_buildQuery() throws IOException {
+	private void loadFile_buildQuery() throws IOException {
 		buffer = new BufferedReader(new FileReader(this.file));
 		
 		int[] DBsArray = new int[this.DBs];
@@ -64,7 +65,7 @@ public class Create_Graph_gmark {
 	}
 	
 	private String generateNode(Map<String, String> nodes, String node1, int DBs, int[] DBsArray) {
-		int dbs = (int) (Math.random()*(DBs)+1);
+		int dbs = (int) (Math.random()*(DBs-1)+1);
 		int[] indexes = new int[DBs];
 		for (int i=0;i<DBs;i++){
 			indexes[i] = i;

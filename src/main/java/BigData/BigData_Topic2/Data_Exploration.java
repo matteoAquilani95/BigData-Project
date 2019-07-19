@@ -1,5 +1,6 @@
 package BigData.BigData_Topic2;
 
+import java.io.IOException;
 import java.util.*;
 
 import javax.print.attribute.HashAttributeSet;
@@ -9,17 +10,16 @@ public class Data_Exploration {
 	private List<String> P;
 	private List<String> nodes;
 	private Map<String,Double> mapDPR;
-
 	private Service_Neo4j service;
+	private double alphaRP=0, betaRP=0, gammaRP=0, aRP=0, bRP=0, cRP=0, dRP=0; 
 
-	public Data_Exploration(Service_Neo4j service) {
+	public Data_Exploration(Service_Neo4j service, Read_Properties readProp) throws NumberFormatException, IOException {
 		this.service = service;
-		this.nodes = this.service.findAll();
+		SetParameters(readProp.getParameters_nDPR(), readProp.getParameters_ADJ());
 	}
 
 	/*
 	 * Input: Grafo DG(N,E); Path Exploration X = n1, n2, ..., nm; intero k
-	 * 
 	 */
 
 	public List<String> Algorithm_1(String[] X, int k){
@@ -35,7 +35,7 @@ public class Data_Exploration {
 					A.remove(A.size()-1);
 				A.add(o);
 				s = Score(A.get(A.size()-1), X, maxDPR);
-				System.out.println("Aggiunto elemento in A: " + A.toString());
+				System.out.println("Aggiunto elemento in A: [" + o + "] Score: " + s);
 			}
 		}
 
@@ -53,9 +53,9 @@ public class Data_Exploration {
 		double s = Double.MIN_VALUE;
 		P = this.service.get_Neighbors(X[X.length-1]); //Ritorna tutti i vicini dell'ultimo nodo del Path X
 		
-		System.out.println("-- Inizio il calcolo di nDPR di tutti i nodi ---");
+		//System.out.println("-- Inizio il calcolo di nDPR di tutti i nodi ---");
 		this.mapDPR = nDPR_Mod();
-		System.out.println("-- Calcolo completato! ---");
+		//System.out.println("-- Calcolo completato! ---");
 		
 		for (String o : P) {
 			if (Score2(o,X) > s) {
@@ -63,7 +63,7 @@ public class Data_Exploration {
 					A.remove(A.size()-1);
 				A.add(o);
 				s = Score2(A.get(A.size()-1), X);
-				System.out.println("Aggiunto elemento in A: " + A.toString());
+				System.out.println("Aggiunto elemento in A: [" + o + "] Score: " + s);
 			}
 		}
 
@@ -71,15 +71,11 @@ public class Data_Exploration {
 	}
 
 	private double Score(String o, String[] X, double maxDPR) {
-		double alpha=0.33, beta=0.33, gamma=0.33;
-
-		return (alpha * nDPR_Neo4j(o, maxDPR)) + (beta * Match(o,X)) + (gamma * ADJ(o,X));
+		return (this.alphaRP * nDPR_Neo4j(o, maxDPR)) + (this.alphaRP * Match(o,X)) + (this.gammaRP * ADJ(o,X));
 	}
 	
 	private double Score2(String o, String[] X) {
-		double alpha=0.33, beta=0.33, gamma=0.33;
-
-		return (alpha * this.mapDPR.get(o)) + (beta * Match(o,X)) + (gamma * ADJ(o,X));
+		return (this.alphaRP * this.mapDPR.get(o)) + (this.betaRP * Match(o,X)) + (this.gammaRP * ADJ(o,X));
 	}
 	
 	/*
@@ -90,9 +86,22 @@ public class Data_Exploration {
 	 */
 
 	private double nDPR_Neo4j(String o, double max) {
-		double result = this.service.Page_Rank_Neo4j(o)/max;
+		//double result = this.service.Page_Rank_Neo4j(o)/max;
+		double result = DPR_Neo4j(o)/max;
 		//System.out.println("Node: "+ o + " PageRank: " + result);
 		return result;
+	}
+	
+	private double DPR_Neo4j(String node) {
+		double df = 0.85;
+		List<String> neighbors = this.service.get_Neighbors(node);
+		double sum = 0.;
+		for (String ng: neighbors) {
+			double aPR = (this.service.Page_Rank_Neo4j(ng) - 1 + df)/df;
+			sum += (aPR * nDIV(node, ng));
+		}
+		
+		return (1-df)+df*sum;
 	}
 	
 	/*
@@ -103,6 +112,7 @@ public class Data_Exploration {
 
 	public Map<String,Double> nDPR_Mod(){
 
+		this.nodes = this.service.findAll();
 		Map<String,Double> PRs = pr();
 
 		//cerco il massimo DPR
@@ -141,19 +151,16 @@ public class Data_Exploration {
 
 			//mappa con i nuovi valori di page rank che vengono calcolati
 			Map<String,Double> newPRs = new HashMap<String,Double>();
-
 			//viene calcolato il page rank di ciascun nodo nel grafo
 			for(String n: this.nodes){
 
 				//lista dei nodi vicini
 				List<String> neighbors = this.service.get_Neighbors(n);
-
 				//per ciascun nodo vicino viene calcolata la sommatoria
 				double sum = 0.;
 				for (String neighbor: neighbors){
 					sum += (PRs.get(neighbor) * nDIV(n,neighbor));
 				}
-
 				//calcolo del page rank del nodo e aggiornamento della mappa con i nuovi pr
 				double pr = (1. - df) + df * sum;
 				newPRs.put(n, pr);
@@ -262,8 +269,8 @@ public class Data_Exploration {
 	}
 
 	private double ADJ(String n, String[] X) {
-		double a=0.25, b=0.25, c=0.25, d=0.25;
-		return a * Loop_Avoid(X,n) + b * Trap_Avoid(X,n) + c * Deroute(X,n) + d * Keep_on_Track(X,n);
+		return this.aRP * Loop_Avoid(X,n) + this.bRP * Trap_Avoid(X,n) + 
+				this.cRP * Deroute(X,n) + this.dRP * Keep_on_Track(X,n);
 	}
 
 	private double Loop_Avoid(String[] X, String n) {
@@ -316,6 +323,18 @@ public class Data_Exploration {
 
 	private double Match(String o, String[] X) {
 		return this.service.getWeight(o, X[X.length-1]);
+	}
+	
+	private void SetParameters(List<String> parameters_nDPR, List<String> parameters_ADJ) {
+		this.alphaRP = Double.parseDouble(parameters_nDPR.get(0));
+		this.betaRP = Double.parseDouble(parameters_nDPR.get(1));
+		this.gammaRP = Double.parseDouble(parameters_nDPR.get(2));
+		
+		this.aRP = Double.parseDouble(parameters_ADJ.get(0));
+		this.bRP = Double.parseDouble(parameters_ADJ.get(1));
+		this.cRP = Double.parseDouble(parameters_ADJ.get(2));
+		this.dRP = Double.parseDouble(parameters_ADJ.get(3));
+		
 	}
 
 }
