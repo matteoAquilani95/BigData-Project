@@ -40,7 +40,7 @@ public class Read_Properties {
 	public String getDBs() throws NumberFormatException, IOException {
 		String result = "";
 		try {
-			result = mapProp.get("num.db");
+			result = mapProp.get("num.db").replace(" ", "");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -50,9 +50,9 @@ public class Read_Properties {
 	public List<String> getParameters_nDPR() throws NumberFormatException, IOException {
 		List<String> result = new ArrayList<String>();
 		try {
-			result.add(mapProp.get("score.alpha"));
-			result.add(mapProp.get("score.beta"));
-			result.add(mapProp.get("score.gamma"));
+			result.add(mapProp.get("score.alpha").replace(" ", ""));
+			result.add(mapProp.get("score.beta").replace(" ", ""));
+			result.add(mapProp.get("score.gamma").replace(" ", ""));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -62,10 +62,10 @@ public class Read_Properties {
 	public List<String> getParameters_ADJ() throws NumberFormatException, IOException {
 		List<String> result = new ArrayList<String>();
 		try {
-			result.add(mapProp.get("Loop_Avoid"));
-			result.add(mapProp.get("Trap_Avoid"));
-			result.add(mapProp.get("Deroute"));
-			result.add(mapProp.get("Keep_on_Track"));
+			result.add(mapProp.get("Loop_Avoid").replace(" ", ""));
+			result.add(mapProp.get("Trap_Avoid").replace(" ", ""));
+			result.add(mapProp.get("Deroute").replace(" ", ""));
+			result.add(mapProp.get("Keep_on_Track").replace(" ", ""));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -74,6 +74,18 @@ public class Read_Properties {
 	
 	public String[] getPathX() {
 		return mapProp.get("X").toLowerCase().replace(" ", "").split("->");
+	}
+	
+	public int getK() {
+		return Integer.parseInt(mapProp.get("k").replace(" ", ""));
+	}
+	
+	public String getMode() {
+		return mapProp.get("DPR").replace(" ", "").toLowerCase();
+	}
+	
+	public String getOutputPath() {
+		return mapProp.get("output");
 	}
 
 	private synchronized void setProperties(String key[], String value[]) throws IOException {

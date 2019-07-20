@@ -16,7 +16,6 @@ public class Service_Neo4j {
 
 	public Service_Neo4j() {
 		driver = GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic("neo4j", "PasSW0rd"));
-		//driver = GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic("paper", "PasSW0rd"));
 	}
 
 	public void add_Data(List<String> queryList) {

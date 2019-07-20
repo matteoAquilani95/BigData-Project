@@ -27,15 +27,15 @@ public class Data_Exploration {
 		double s = Double.MIN_VALUE;
 		P = this.service.get_Neighbors(X[X.length-1]); //Ritorna tutti i vicini dell'ultimo nodo del Path X
 
-		double maxDPR = this.service.max_Page_Rank_Neo4j(); //findMaxDPR();
+		double maxDPR = this.service.max_Page_Rank_Neo4j();
 
 		for (String o : P) {
 			if (Score(o,X,maxDPR) > s) {
 				if(A.size() >= k)
-					A.remove(A.size()-1);
+					A.remove(0);
 				A.add(o);
 				s = Score(A.get(A.size()-1), X, maxDPR);
-				System.out.println("Aggiunto elemento in A: [" + o + "] Score: " + s);
+				//System.out.println("Aggiunto elemento in A: [" + o + "] Score: " + s);
 			}
 		}
 
@@ -53,17 +53,15 @@ public class Data_Exploration {
 		double s = Double.MIN_VALUE;
 		P = this.service.get_Neighbors(X[X.length-1]); //Ritorna tutti i vicini dell'ultimo nodo del Path X
 		
-		//System.out.println("-- Inizio il calcolo di nDPR di tutti i nodi ---");
 		this.mapDPR = nDPR_Mod();
-		//System.out.println("-- Calcolo completato! ---");
 		
 		for (String o : P) {
 			if (Score2(o,X) > s) {
 				if(A.size() >= k)
-					A.remove(A.size()-1);
+					A.remove(0);
 				A.add(o);
 				s = Score2(A.get(A.size()-1), X);
-				System.out.println("Aggiunto elemento in A: [" + o + "] Score: " + s);
+				//System.out.println("Aggiunto elemento in A: [" + o + "] Score: " + s);
 			}
 		}
 
@@ -71,7 +69,7 @@ public class Data_Exploration {
 	}
 
 	private double Score(String o, String[] X, double maxDPR) {
-		return (this.alphaRP * nDPR_Neo4j(o, maxDPR)) + (this.alphaRP * Match(o,X)) + (this.gammaRP * ADJ(o,X));
+		return (this.alphaRP * nDPR_Neo4j(o, maxDPR)) + (this.betaRP * Match(o,X)) + (this.gammaRP * ADJ(o,X));
 	}
 	
 	private double Score2(String o, String[] X) {
@@ -87,12 +85,12 @@ public class Data_Exploration {
 
 	private double nDPR_Neo4j(String o, double max) {
 		//double result = this.service.Page_Rank_Neo4j(o)/max;
-		double result = DPR_Neo4j(o)/max;
+		double result = newDPR(o)/max;
 		//System.out.println("Node: "+ o + " PageRank: " + result);
 		return result;
 	}
 	
-	private double DPR_Neo4j(String node) {
+	private double newDPR(String node) {
 		double df = 0.85;
 		List<String> neighbors = this.service.get_Neighbors(node);
 		double sum = 0.;
@@ -169,7 +167,7 @@ public class Data_Exploration {
 			//aggiornamento di PRs con la mappa calcolata precedentemente
 			PRs=newPRs;
 			iterations--;
-			System.out.println(iterations);
+			System.out.println("Iteractions left: "+ iterations);
 		}
 
 		return PRs;
@@ -334,6 +332,18 @@ public class Data_Exploration {
 		this.bRP = Double.parseDouble(parameters_ADJ.get(1));
 		this.cRP = Double.parseDouble(parameters_ADJ.get(2));
 		this.dRP = Double.parseDouble(parameters_ADJ.get(3));
+		
+	}
+	
+	public void SetParameters2(String[] score, String[] ADJ) {
+		this.alphaRP = Double.parseDouble(score[0]);
+		this.betaRP = Double.parseDouble(score[1]);
+		this.gammaRP = Double.parseDouble(score[2]);
+		
+		this.aRP = Double.parseDouble(ADJ[0]);
+		this.bRP = Double.parseDouble(ADJ[1]);
+		this.cRP = Double.parseDouble(ADJ[2]);
+		this.dRP = Double.parseDouble(ADJ[3]);
 		
 	}
 
