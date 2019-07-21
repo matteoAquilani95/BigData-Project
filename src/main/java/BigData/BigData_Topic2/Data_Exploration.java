@@ -17,15 +17,39 @@ public class Data_Exploration {
 		this.service = service;
 		SetParameters(readProp.getParameters_nDPR(), readProp.getParameters_ADJ());
 	}
+	
+	public List<String> Explore(List<String> X, int k, int sizeExploration, String mode){
+		List<String> finalPath = new ArrayList<>();
+		
+		while(sizeExploration>0){
+			List<String> A;
+			
+			if(mode.equals("standard"))
+				A = Algorithm_1_Mod(X, k);
+			else
+				A = Algorithm_1(X, k);
+			
+			if(A.size() == 0)
+				break;
+			String bestNode = A.get(A.size()-1);
+			if (X.contains(bestNode))
+				break;
+			X.add(bestNode);
+			finalPath.add(bestNode);
+			sizeExploration--;
+		}
+		
+		return finalPath;
+	}
 
 	/*
 	 * Input: Grafo DG(N,E); Path Exploration X = n1, n2, ..., nm; intero k
 	 */
 
-	public List<String> Algorithm_1(String[] X, int k){
+	public List<String> Algorithm_1(List<String> X, int k){
 		List<String> A = new ArrayList<String>();
 		double s = Double.MIN_VALUE;
-		P = this.service.get_Neighbors(X[X.length-1]); //Ritorna tutti i vicini dell'ultimo nodo del Path X
+		P = this.service.get_Neighbors(X.get(X.size()-1)); //Ritorna tutti i vicini dell'ultimo nodo del Path X
 
 		double maxDPR = this.service.max_Page_Rank_Neo4j();
 
@@ -48,10 +72,10 @@ public class Data_Exploration {
 	 * Usare -> score2
 	 */
 	
-	public List<String> Algorithm_1_Mod(String[] X, int k){
+	public List<String> Algorithm_1_Mod(List<String> X, int k){
 		List<String> A = new ArrayList<String>();
 		double s = Double.MIN_VALUE;
-		P = this.service.get_Neighbors(X[X.length-1]); //Ritorna tutti i vicini dell'ultimo nodo del Path X
+		P = this.service.get_Neighbors(X.get(X.size()-1)); //Ritorna tutti i vicini dell'ultimo nodo del Path X
 		
 		this.mapDPR = nDPR_Mod();
 		
@@ -68,11 +92,11 @@ public class Data_Exploration {
 		return A;
 	}
 
-	private double Score(String o, String[] X, double maxDPR) {
+	private double Score(String o, List<String> X, double maxDPR) {
 		return (this.alphaRP * nDPR_Neo4j(o, maxDPR)) + (this.betaRP * Match(o,X)) + (this.gammaRP * ADJ(o,X));
 	}
 	
-	private double Score2(String o, String[] X) {
+	private double Score2(String o, List<String> X) {
 		return (this.alphaRP * this.mapDPR.get(o)) + (this.betaRP * Match(o,X)) + (this.gammaRP * ADJ(o,X));
 	}
 	
@@ -266,22 +290,22 @@ public class Data_Exploration {
 		return max;
 	}
 
-	private double ADJ(String n, String[] X) {
+	private double ADJ(String n, List<String> X) {
 		return this.aRP * Loop_Avoid(X,n) + this.bRP * Trap_Avoid(X,n) + 
 				this.cRP * Deroute(X,n) + this.dRP * Keep_on_Track(X,n);
 	}
 
-	private double Loop_Avoid(String[] X, String n) {
-		for(int i=0; i<X.length; i++) {
-			if (X[i].equals(n))
-				return 1/(X.length-(i+1)+1);
+	private double Loop_Avoid(List<String> X, String n) {
+		for(int i=0; i<X.size(); i++) {
+			if (X.get(i).equals(n))
+				return 1/(X.size()-(i+1)+1);
 		}
 
 		return 0.;
 	}
 
-	private double Trap_Avoid(String[] X, String n) {
-		return localCC(X[X.length-1]) - localCC(n);
+	private double Trap_Avoid(List<String> X, String n) {
+		return localCC(X.get(X.size()-1)) - localCC(n);
 	}
 
 	private double localCC(String n) {
@@ -301,17 +325,17 @@ public class Data_Exploration {
 		return this.service.get_Neighbors(n).size();
 	}
 
-	private double Deroute(String[] X, String n) {
+	private double Deroute(List<String> X, String n) {
 		Set<String> nx = new HashSet<String>();
 		Set<String> no = new HashSet<String>();
-		nx.addAll(this.service.get_Neighbors(X[X.length-1]));
+		nx.addAll(this.service.get_Neighbors(X.get(X.size()-1)));
 		no.addAll(this.service.get_Neighbors(n));
 		nx.retainAll(no);
 		return 1 / (nx.size() + 1);
 	}
 
-	private double Keep_on_Track(String[] X, String n) {
-		Set<String> s1 = Sources(X[0]);
+	private double Keep_on_Track(List<String> X, String n) {
+		Set<String> s1 = Sources(X.get(0));
 		Set<String> sn = Sources(n);
 		Set<String> intersection = new HashSet<String>();
 		intersection.addAll(s1);
@@ -319,8 +343,8 @@ public class Data_Exploration {
 		return intersection.size() / s1.size();
 	}
 
-	private double Match(String o, String[] X) {
-		return this.service.getWeight(o, X[X.length-1]);
+	private double Match(String o, List<String> X) {
+		return this.service.getWeight(o, X.get(X.size()-1));
 	}
 	
 	private void SetParameters(List<String> parameters_nDPR, List<String> parameters_ADJ) {

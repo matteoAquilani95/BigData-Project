@@ -9,14 +9,14 @@ import java.util.Set;
 
 public class Metrics {
 	
-	public double nDDCG(String[] X, String newNode, int r) {
+	public double nDDCG(List<String> X, String newNode, int r) {
 		
-		if (r > X.length + 1)
+		if (r > X.size() + 1)
 			return -1;
 		
 		List<String> ranking = new ArrayList<>();
-		for(int i=0; i<X.length; i++) {
-			ranking.add(X[i]);
+		for(String node: X) {
+			ranking.add(node);
 		}
 		ranking.add(newNode);
 		

@@ -72,8 +72,16 @@ public class Read_Properties {
 		return result;
 	}
 	
-	public String[] getPathX() {
-		return mapProp.get("X").toLowerCase().replace(" ", "").split("->");
+//	public String[] getPathX() {
+//		return mapProp.get("X").toLowerCase().replace(" ", "").split("->");
+//	}
+	
+	public List<String> getPathX(){
+		List<String> X = new ArrayList<String>();
+		String[] parts = mapProp.get("X").toLowerCase().replace(" ", "").split("->");
+		for (int i=0; i<parts.length; i++)
+			X.add(parts[i]);
+		return X;
 	}
 	
 	public int getK() {
@@ -86,6 +94,10 @@ public class Read_Properties {
 	
 	public String getOutputPath() {
 		return mapProp.get("output");
+	}
+	
+	public int getSizeExploration() {
+		return Integer.parseInt(mapProp.get("sizeExploration"));
 	}
 
 	private synchronized void setProperties(String key[], String value[]) throws IOException {
