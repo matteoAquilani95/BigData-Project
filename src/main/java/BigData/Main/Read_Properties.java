@@ -1,4 +1,4 @@
-package BigData.BigData_Topic2;
+package BigData.Main;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -84,6 +84,10 @@ public class Read_Properties {
 		return X;
 	}
 	
+	public String getInputPathGraph() {
+		return mapProp.get("input").replace(" ", "");
+	}
+	
 	public int getK() {
 		return Integer.parseInt(mapProp.get("k").replace(" ", ""));
 	}
@@ -97,7 +101,19 @@ public class Read_Properties {
 	}
 	
 	public int getSizeExploration() {
-		return Integer.parseInt(mapProp.get("sizeExploration"));
+		return Integer.parseInt(mapProp.get("sizeExploration").replace(" ", ""));
+	}
+	
+	public int getBuildGraph() {
+		return Integer.parseInt(mapProp.get("build_Graph").replace(" ", ""));
+	}
+	
+	public String getNameDB() {
+		return mapProp.get("nameDB");
+	}
+
+	public String getPswDB() {
+		return mapProp.get("pswDB");
 	}
 
 	private synchronized void setProperties(String key[], String value[]) throws IOException {

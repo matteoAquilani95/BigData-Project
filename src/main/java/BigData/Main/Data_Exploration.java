@@ -1,4 +1,4 @@
-package BigData.BigData_Topic2;
+package BigData.Main;
 
 import java.io.IOException;
 import java.util.*;
@@ -77,7 +77,8 @@ public class Data_Exploration {
 		double s = Double.MIN_VALUE;
 		P = this.service.get_Neighbors(X.get(X.size()-1)); //Ritorna tutti i vicini dell'ultimo nodo del Path X
 		
-		this.mapDPR = nDPR_Mod();
+		if(this.mapDPR == null)
+			this.mapDPR = nDPR_Mod();
 		
 		for (String o : P) {
 			if (Score2(o,X) > s) {
@@ -108,10 +109,10 @@ public class Data_Exploration {
 	 */
 
 	private double nDPR_Neo4j(String o, double max) {
-		//double result = this.service.Page_Rank_Neo4j(o)/max;
-		double result = newDPR(o)/max;
-		//System.out.println("Node: "+ o + " PageRank: " + result);
-		return result;
+		if(this.alphaRP != 0.0)
+			return newDPR(o)/max;
+		else
+			return 0.;
 	}
 	
 	private double newDPR(String node) {
@@ -191,7 +192,7 @@ public class Data_Exploration {
 			//aggiornamento di PRs con la mappa calcolata precedentemente
 			PRs=newPRs;
 			iterations--;
-			System.out.println("Iteractions left: "+ iterations);
+			System.out.println("Iterations left: "+ iterations);
 		}
 
 		return PRs;
@@ -291,8 +292,11 @@ public class Data_Exploration {
 	}
 
 	private double ADJ(String n, List<String> X) {
-		return this.aRP * Loop_Avoid(X,n) + this.bRP * Trap_Avoid(X,n) + 
-				this.cRP * Deroute(X,n) + this.dRP * Keep_on_Track(X,n);
+		if(this.gammaRP != 0.0)
+			return this.aRP * Loop_Avoid(X,n) + this.bRP * Trap_Avoid(X,n) + 
+					this.cRP * Deroute(X,n) + this.dRP * Keep_on_Track(X,n);
+		else
+			return 0.;
 	}
 
 	private double Loop_Avoid(List<String> X, String n) {

@@ -1,0 +1,19 @@
+Nodes: 1k
+
+DPR: 52 sec
+newDPR: 3 sec
+
+Nodes: 3k
+
+DPR: 13 min
+newDPR: 5 sec
+
+Nodes: 6k
+
+DPR: 14 min
+newDPR: 5 sec
+
+Nodes: 10k
+
+DPR: 1h e 15min
+newDPR: 3 sec

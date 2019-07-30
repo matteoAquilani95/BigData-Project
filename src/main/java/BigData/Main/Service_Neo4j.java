@@ -1,4 +1,4 @@
-package BigData.BigData_Topic2;
+package BigData.Main;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +14,8 @@ public class Service_Neo4j {
 
 	private Driver driver;
 
-	public Service_Neo4j() {
-		driver = GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic("neo4j", "PasSW0rd"));
+	public Service_Neo4j(String nameDB, String pswDB) {
+		driver = GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic(nameDB, pswDB));
 	}
 
 	public void add_Data(List<String> queryList) {

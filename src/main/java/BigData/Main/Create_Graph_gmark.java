@@ -1,4 +1,4 @@
-package BigData.BigData_Topic2;
+package BigData.Main;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -20,10 +20,10 @@ public class Create_Graph_gmark {
 	private BufferedReader buffer;
 	private int DBs;
 	
-	public Create_Graph_gmark(String pathGraph, Read_Properties rp) throws NumberFormatException, IOException{
+	public Create_Graph_gmark(String pathGraph, String DBs) throws NumberFormatException, IOException{
 		this.file = new File(pathGraph);
 		this.result = new ArrayList<String>();
-		this.DBs = Integer.parseInt(rp.getDBs());
+		this.DBs = Integer.parseInt(DBs);
 		this.loadFile_buildQuery();
 	}
 

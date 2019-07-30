@@ -1,0 +1,76 @@
+---- only DPR ----
+Exploration path: 
+a212,b201,d186,g167
+d1323,e1298,b1412
+b5498,c5339,a5652
+d5349,g4825,e5168
+
+nDDCG: 0.8675034925694373
+
+
+---- only Match ----
+Exploration path: 
+a212,b201,d186,g167
+a4437,e3914
+g870,c1019,f953,d972,e966,a1098
+
+nDDCG: 1.0
+
+
+---- DPR + LOOP_Avoid ----
+Exploration path: 
+a212,b201,d186,g167
+d1323,e1298,b1412
+b5498,c5339,a5652
+d5349,g4825,e5168
+
+nDDCG: 0.8675034925694373
+
+
+---- DPR + DEROUTE ----
+Exploration path: 
+a212,b201,d186,g167
+d1323,e1298,b1412
+b5498,c5339,a5652
+d5349,g4825,e5168
+
+nDDCG: 0.8675034925694373
+
+
+---- DPR + Trap_Avoid ----
+Exploration path: 
+a212,b201,d186,g167
+d1323,e1298,b1412
+b5498,c5339,a5652
+d5349,g4825,e5168
+
+nDDCG: 0.8675034925694373
+
+
+---- DPR + Keep on Track ----
+Exploration path: 
+a212,b201,d186,g167
+d1323,e1298,b1412
+b5498,c5339,a5652
+d5349,g4825,e5168
+
+nDDCG: 0.8675034925694373
+
+---- DPR + ADJ ----
+Exploration path: 
+a212,b201,d186,g167
+d1323,e1298,b1412
+b5498,c5339,a5652
+d5349,g4825,e5168
+
+nDDCG: 0.8675034925694373
+
+---- SCORE ----
+Exploration path: 
+a212,b201,d186,g167
+a4437,e3914
+g870,c1019,f953,d972,e966,a1098
+
+nDDCG: 1.0
+
+
